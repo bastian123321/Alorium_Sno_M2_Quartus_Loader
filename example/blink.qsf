@@ -1,0 +1,34 @@
+# Alorium Sno M2 (MAX 10 10M16SAU169C8G)
+set_global_assignment -name FAMILY "MAX 10"
+set_global_assignment -name DEVICE 10M16SAU169C8G
+set_global_assignment -name TOP_LEVEL_ENTITY blink_top
+set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
+
+set_global_assignment -name VERILOG_FILE blink_top.v
+set_global_assignment -name VERILOG_FILE ../verilog/factory_escape.v
+set_global_assignment -name VERILOG_FILE ../third_party/alt_dual_boot.v
+set_global_assignment -name SDC_FILE blink.sdc
+
+# The settings that make the image loadable by Alorium's xlr8reconfig:
+set_global_assignment -name INTERNAL_FLASH_UPDATE_MODE "Dual Images"
+set_global_assignment -name USE_CONFIGURATION_DEVICE OFF
+
+set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
+set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
+set_global_assignment -name DEVICE_FILTER_PIN_COUNT 169
+set_global_assignment -name STRATIX_DEVICE_IO_STANDARD "3.3-V LVTTL"
+set_global_assignment -name VCCA_USER_VOLTAGE 3.3V
+set_global_assignment -name RESERVE_ALL_UNUSED_PINS "AS INPUT TRI-STATED"
+set_global_assignment -name RESERVE_ALL_UNUSED_PINS_NO_OUTPUT_GND "AS INPUT TRI-STATED"
+set_global_assignment -name CRC_ERROR_OPEN_DRAIN OFF
+set_global_assignment -name ENABLE_OCT_DONE OFF
+
+# Pins (balls found on a Sno M2; see docs/pins.md)
+set_location_assignment PIN_H6  -to Clock
+set_location_assignment PIN_B9  -to RESET_N
+set_location_assignment PIN_K10 -to LED
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Clock
+set_instance_assignment -name IO_STANDARD "3.3 V Schmitt Trigger" -to RESET_N
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LED
+
+set_global_assignment -name LAST_QUARTUS_VERSION "25.1std.0 Lite Edition"

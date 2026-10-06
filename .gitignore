@@ -1,0 +1,14 @@
+# Quartus build products
+db/
+incremental_db/
+output_files/
+*.rpd
+*.pof
+*.sof
+*.jdi
+*.pin
+*.summary
+*.smsg
+*.qws
+# Intel IP is not redistributed here: scripts/copy_dual_boot.py copies it from your Quartus install
+third_party/alt_dual_boot.v
