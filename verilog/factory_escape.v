@@ -9,7 +9,7 @@
 // Quartus install) and  INTERNAL_FLASH_UPDATE_MODE "Dual Images"  in the .qsf.
 module factory_escape #(
     parameter CLK_HZ  = 16_000_000,   // frequency of clk
-    parameter HOLD_MS = 1500          // how long `hold` must stay high (max 4095)
+    parameter HOLD_MS = 5000          // how long `hold` must stay high (max 8191)
 ) (
     input wire clk,
     input wire hold                   // active high; wire a button (or a button combination) here
@@ -21,7 +21,7 @@ module factory_escape #(
   wire        ms_tick = (ms_div == CLKS_PER_MS - 1);
   always @(posedge clk) ms_div <= ms_tick ? 32'd0 : ms_div + 32'd1;
 
-  reg  [11:0] held = 12'd0;
+  reg  [12:0] held = 13'd0;
   reg  [2:0]  st   = 3'd0;
   reg         wr   = 1'b0;
   reg         rc   = 1'b0;
@@ -29,9 +29,9 @@ module factory_escape #(
 
   always @(posedge clk) begin
     if (hold) begin
-      if (ms_tick && held != 12'hFFF) held <= held + 12'd1;
+      if (ms_tick && held != 13'h1FFF) held <= held + 13'd1;
     end else
-      held <= 12'd0;
+      held <= 13'd0;
 
     case (st)
       3'd0: if (held >= HOLD_MS) begin wr <= 1'b1; st <= 3'd1; end   // select image 0, override pins

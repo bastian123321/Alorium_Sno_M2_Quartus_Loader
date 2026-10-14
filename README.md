@@ -26,7 +26,9 @@ the loader afterwards, so the blaster is only needed for recovery.
 * So your design must (1) be compiled in a flash mode and format that fits that slot, and (2)
   contain a way to **hand the board back to image 0**, because your design has no soft AVR and
   can't answer the loader. This repo provides that as a small Verilog module (`factory_escape`):
-  hold a button for 1.5 s and the FPGA reloads the factory image.
+  hold a button for 5 s and the FPGA reloads the factory image. The board's **reset button** is the best
+  choice: `RESET#` is a standard MicroMod pin that every carrier has and it is wired to the FPGA (ball `B9`),
+  while the `BOOT` pad is **not connected** to the FPGA on the Sno M2.
 
 Details: [docs/how-it-works.md](docs/how-it-works.md).
 
@@ -70,7 +72,7 @@ Details: [docs/how-it-works.md](docs/how-it-works.md).
 4. **Include the escape hatch.** Add `verilog/factory_escape.v` and `third_party/alt_dual_boot.v` to
    the project and connect `hold` to a button:
    ```verilog
-   factory_escape #(.CLK_HZ(16_000_000), .HOLD_MS(1500)) escape (.clk(Clock), .hold(~RESET_N));
+   factory_escape #(.CLK_HZ(16_000_000), .HOLD_MS(5000)) escape (.clk(Clock), .hold(~RESET_N));
    ```
    Dual-image mode also *requires* a remote-update block in the design (Quartus error 169130
    otherwise), which `alt_dual_boot` provides. **Every design you load must contain this.** If a
@@ -91,7 +93,7 @@ Details: [docs/how-it-works.md](docs/how-it-works.md).
    ```
    It must end with `check : OK` (size 270,336 bytes and the expected header).
 3. **Get the board to answer the loader.** If the board is running Alorium's image, it already
-   does. If it is running your design, hold the escape button for 1.5 s: the display/LED stops, and
+   does. If it is running your design, hold the escape button for 5 s: the display/LED stops, and
    the board is now in the factory image. Close the Arduino Serial Monitor (it holds the COM port).
 4. **Flash:**
    ```
@@ -123,7 +125,7 @@ none of the extra blocks (floating point, NeoPixel, Servo, Quad), so see
 
 `example/` is the smallest design that follows every rule: it blinks the on-board LED (ball `K10`)
 and returns to the factory image when you hold the board's reset button (`RESET_N`, ball `B9`)
-for 1.5 s.
+for 5 s.
 
 ```
 python scripts/copy_dual_boot.py
